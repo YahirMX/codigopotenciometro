@@ -1,0 +1,50 @@
+// Definir los pines de los sensores
+const int lm35Pin = A0;    // Pin analógico para el LM35
+const int ldrPin = A1;     // Pin analógico para la fotorresistencia (LDR)
+const int potPin = A2;     // Pin analógico para el potenciómetro
+
+// Variables para almacenar los valores leídos
+int lm35Value = 0;         // Valor leído del LM35 (temperatura)
+int ldrValue = 0;          // Valor leído de la LDR (intensidad de luz)
+int potValue = 0;          // Valor leído del potenciómetro (resistencia)
+
+// Variables para convertir las lecturas en unidades físicas
+float temperature = 0.0;   // Temperatura en grados Celsius
+int lightIntensity = 0;    // Intensidad de luz (valor de 0 a 1023)
+int resistance = 0;        // Valor de resistencia del potenciómetro (de 0 a 1023)
+
+void setup() {
+  // Inicializar comunicación serial
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Leer los valores de los sensores
+  lm35Value = analogRead(lm35Pin);
+  ldrValue = analogRead(ldrPin);
+  potValue = analogRead(potPin);
+
+  // Convertir el valor de la lectura del LM35 a temperatura en grados Celsius
+  temperature = (lm35Value * 5.0 / 1023.0) * 100.0;
+
+  // Convertir la lectura de la LDR a un valor de luz (0 a 1023)
+  lightIntensity = map(ldrValue, 0, 1023, 0, 100);
+
+  // Convertir la lectura del potenciómetro a un valor de resistencia (0 a 1023)
+  resistance = potValue;
+
+  // Mostrar los valores en el monitor serial
+  Serial.print("Temperature (LM35): ");
+  Serial.print(temperature);
+  Serial.print(" °C | ");
+
+  Serial.print("Light Intensity (LDR): ");
+  Serial.print(lightIntensity);
+  Serial.print(" % | ");
+
+  Serial.print("Resistance (Potentiometer): ");
+  Serial.println(resistance);
+
+  // Esperar un segundo antes de la siguiente lectura
+  delay(1000);
+}
